@@ -26,6 +26,7 @@
     .panels {
       min-height: 100vh;
       overflow: hidden;
+      display: flex;
     }
 
     .panel {
@@ -36,14 +37,20 @@
       align-items: center;
       /* Safari transitionend event.propertyName === flex */
       /* Chrome + FF transitionend event.propertyName === flex-grow */
-      transition:
+      transition:                         /* Sets transition properties for the below */
         font-size 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
         flex 0.7s cubic-bezier(0.61,-0.19, 0.7,-0.11),
         background 0.2s;
       font-size: 20px;
       background-size: cover;
       background-position: center;
+      flex: 1;                           /* Shorthand for flex-grow: 1 with flex:basis 0 */
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
     }
+
 
     .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
     .panel2 { background-image:url(https://source.unsplash.com/rFKUFzjPYiQ/1500x1500); }
@@ -56,6 +63,27 @@
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
+      /* border: 1px solid red; */
+      flex: 1 0 auto;               /* sets flex-grow of 1, flex-shrink of 0, flex-basis auto (default) */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+
+    .panel.open-active > *:first-child {
+      transform: translateY(0);
+    }
+
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+
+    .panel.open-active > *:last-child {
+      transform: translateY(0);
     }
 
     .panel p {
@@ -71,6 +99,7 @@
 
     .panel.open {
       font-size: 40px;
+      flex: 5;                /* Expands panel when class set to open */
     }
 
   </style>
@@ -105,7 +134,19 @@
   </div>
 
   <script>
-
+      const panels = document.querySelectorAll('.panel');
+      function toggleOpen() {
+        this.classList.toggle('open');
+      }
+      
+      function toggleActive(e) {
+        console.log(e.propertyName);
+        if(e.propertyName.includes('flex')) {       /* Could also use if(e.propertyName === 'flex-grow'), but in Safari this is simply 'flex' - covering all bases here */
+          this.classList.toggle('open-active');
+        }
+      }
+      panels.forEach(panel => panel.addEventListener('click', toggleOpen));
+      panels.forEach(panel => panel.addEventListener('transitionend', toggleActive));
   </script>
 
 

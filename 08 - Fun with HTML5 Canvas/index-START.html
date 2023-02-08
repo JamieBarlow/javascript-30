@@ -7,8 +7,64 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
-</script>
+// See MDN Docs for properties and methods of canvas: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+const canvas = document.querySelector('#draw');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+ctx.strokeStyle = '#BADA55';
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
+ctx.lineWidth = 50;
+// emulates Photoshop blend mode
+ctx.globalCompositeOperation = 'destination-over';
 
+// Use to only draw on click, not mouse movement
+let isDrawing = false;
+// Positioning of line drawing
+let lastX = 0;
+let lastY = 0;
+let hue = 0;
+let direction = true;
+
+// Try removing or commenting out parts of the below to see what each part of the function does
+function draw(e) {
+  if (!isDrawing) return;   // stop function from running when they are not moused down
+  console.log(e);
+  ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+  ctx.beginPath();
+  // start from
+  ctx.moveTo(lastX, lastY);
+  // go to
+  ctx.lineTo(e.offsetX, e.offsetY);
+  ctx.stroke();
+  // update position
+  lastX = e.offsetX;
+  lastY = e.offsetY;
+  hue++;
+  if (hue >= 360) {
+    hue = 0;
+  }
+  // Flip the direction of line width (increase or decrease)
+  if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+    direction = !direction;
+  }
+  if(direction) {
+    ctx.lineWidth++;
+  } else {
+    ctx.lineWidth--;
+  }
+}
+
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mousedown', (e) => {
+  isDrawing = true;
+  [lastX, lastY] = [e.offsetX, e.offsetY];     // ES6 destructuring shorthand for 2 lines assigning values
+});
+canvas.addEventListener('mouseup', () => isDrawing = false);
+canvas.addEventListener('mouseout', () => isDrawing = false);    // accounts for mouse leaving window before mouse up
+
+</script>
 <style>
   html, body {
     margin: 0;

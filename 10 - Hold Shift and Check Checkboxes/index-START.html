@@ -96,6 +96,30 @@
   </div>
 
 <script>
+  const checkboxes = document.querySelectorAll('.inbox input[type="checkbox"]');
+
+  let lastChecked;
+
+  function handleCheck(e) {
+    let inBetween = false;                     // false by default. Once set to true, the item will be ticked - see below
+    // Check if they had the shift key down
+    // AND check that they are checking it
+    if(e.shiftKey && this.checked) {
+      checkboxes.forEach(checkbox => {
+        if(checkbox === this || checkbox === lastChecked) {
+          inBetween = !inBetween;    // toggle
+        }
+        if(inBetween) {
+          checkbox.checked = true;
+        }
+      })
+    }
+    lastChecked = this;    // keeps track of which item you've last checked - sets to last item you clicked on
+  }
+
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('click', handleCheck);
+  })
 </script>
 </body>
 </html>

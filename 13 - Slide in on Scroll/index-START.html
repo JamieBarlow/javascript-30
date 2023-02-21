@@ -43,6 +43,7 @@
   </div>
 
   <script>
+    // 'Debounces' the checkSlide function so that it isn't triggering constantly with a scroll function. There is a version of this in Lodash
     function debounce(func, wait = 20, immediate = true) {
       var timeout;
       return function() {
@@ -57,6 +58,28 @@
         if (callNow) func.apply(context, args);
       };
     }
+
+    const sliderImages = document.querySelectorAll('.slide-in');
+
+    // Checks position in page (scrollY) to slide image in at 
+    function checkSlide(e) {
+      sliderImages.forEach(slideImage => {
+        // half way through the image
+        const slideInAt = (window.scrollY + window.innerHeight) - slideImage.height / 2;
+        // bottom of image
+        const imageBottom = slideImage.offsetTop + slideImage.height;
+        const isHalfShown = slideInAt > slideImage.offsetTop;
+        const isNotScrolledPast = window.scrollY < imageBottom;
+        if(isHalfShown && isNotScrolledPast) {
+          slideImage.classList.add('active');
+        } else {
+          slideImage.classList.remove('active');
+        }
+      })
+      console.log(e);
+    }
+
+    window.addEventListener('scroll', debounce(checkSlide));
 
   </script>
 
@@ -112,6 +135,7 @@
       transform: translateX(30%) scale(0.95);
     }
 
+    /* To use when image is in final position  */
     .slide-in.active {
       opacity: 1;
       transform: translateX(0%) scale(1);

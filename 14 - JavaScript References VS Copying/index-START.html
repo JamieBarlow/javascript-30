@@ -7,14 +7,29 @@
 <body>
 
   <script>
-    // start with strings, numbers and booleans
+    // start with strings, numbers and booleans. These use 'PASS BY VALUE'
+    let age = 100;
+    let age2 = age;
+    console.log(age, age2);
+    age = 200;
+    console.log(age, age2);
+
+    let name = 'Wes';
+    let name2 = name;
+    console.log(name, name2);
+    name = 'wesley';
+    console.log(name, name2); // these examples demonstrate that changing the original value after it has been referenced won't change the value referencing it (age2, name2)
 
     // Let's say we have an array
     const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
 
     // and we want to make a copy of it.
+    const team = players;
+    console.log(players, team);
 
     // You might think we can just do something like this:
+    team[3] = 'Lux';
+    console.log(players, team);                  // 'PASS BY REFERENCE.' We've updated the original array as well! This is NOT the same as what we did earlier with numbers and strings
 
     // however what happens when we update that array?
 
@@ -27,10 +42,19 @@
     // So, how do we fix this? We take a copy instead!
 
     // one way
+    const team2 = players.slice();              // the .slice() method returns a shallow copy of a portion of an array and puts into a new array object. Non-destructive
+    team2[3] = 'Brad';
+    console.log(players, team, team2);          // team2 values should now be different
 
-    // or create a new array and concat the old one in
+    // or create a new array and concat the old one in      // .concat() is non-destructive too - merges 2 or more arrays without changing the originals
+    const team3 = [].concat(players);
 
     // or use the new ES6 Spread
+    const team4 = [...players];
+    team4[3] = 'heeee hawww'
+    console.log(team3, team4);
+
+    const team5 = Array.from(players);
 
     // now when we update it, the original one isn't changed
 
@@ -43,12 +67,36 @@
     };
 
     // and think we make a copy:
+    const captain = person;
+    captain.number = 99;
+    console.log(person, captain);          // this hasn't made a copy, we are passing by reference so changing both at once
 
     // how do we take a copy instead?
+    const cap2 = Object.assign({}, person, { number: 55 });              // this is similar to [].concat() above, but with objects. You can use the 3rd argument to pass in values
+    console.log (person, cap2);             // these are now different
 
     // We will hopefully soon see the object ...spread
+    const cap3 = {...person};
 
     // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
+    const wes = {
+      name: 'Wes',
+      age: 100,
+      social: {
+        twitter: '@wesbos',
+        facebook: 'wesbos.developer'
+      }
+    }
+    const dev = Object.assign({}, wes);
+    dev.name = 'Wesley';
+    console.log (wes, dev);                // the 2 will display different values because 'dev' is a shallow copy of wes, so it's not passing by reference here
+
+    // However:
+    dev.social.twitter = '@coolman';
+    console.log(wes.social, dev.social);  // oh no - these have the same value now. This is because Object.assign produces a shallow copy - only 1 level deep
+
+    // To create a deep copy you can:
+    const dev2 = JSON.parse(JSON.stringify(wes));   // this isn't the most performant method for deep-cloning. Better to look up methods with e.g. Lodash
 
   </script>
 

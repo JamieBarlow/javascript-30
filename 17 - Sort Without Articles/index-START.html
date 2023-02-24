@@ -48,6 +48,32 @@
 <script>
 const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
 
+// const bandName = bandName = bands.sort(compareBands);
+
+const sortedBands = bands.sort((a,b) => removeArticle(a) > removeArticle(b) ? 1 : -1);     // just using this function in the if statement, rather than modifying the array itself
+
+function removeArticle(bandName) {
+  if(bandName.slice(0, 4) === "The ") {
+    bandName = bandName.slice(4);
+  } else if(bandName.slice(0, 2) === "A ") {
+    bandName = bandName.slice(2);
+  } else if(bandName.slice(0, 3) === "An ") {
+    bandName = bandName.slice(3);
+  }
+  return bandName;
+}
+  
+// Alternative function using regexp:
+function strip(bandName) {
+  return bandName.replace(/^(a |the |an )/i, '').trim();
+}
+
+document.querySelector('#bands').innerHTML = 
+  sortedBands
+  .map(band => `<li>${band}</li>`)
+  .join('');
+
+console.log(sortedBands);
 
 </script>
 

@@ -97,6 +97,8 @@
 
     // To create a deep copy you can:
     const dev2 = JSON.parse(JSON.stringify(wes));   // this isn't the most performant method for deep-cloning. Better to look up methods with e.g. Lodash
+    dev2.social.twitter = '@different';
+    console.log(wes.social, dev2.social);
 
   </script>
 
